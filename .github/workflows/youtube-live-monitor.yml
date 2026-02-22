@@ -26,9 +26,9 @@ jobs:
           const https = require("https");
           const fs = require("fs");
 
-          const YOUTUBE_API_KEY   = process.env.YOUTUBE_API_KEY;
+          const YOUTUBE_API_KEY    = process.env.YOUTUBE_API_KEY;
           const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-          const TELEGRAM_CHAT_ID  = process.env.TELEGRAM_CHAT_ID;
+          const TELEGRAM_CHAT_ID   = process.env.TELEGRAM_CHAT_ID;
 
           const PLAYLIST_IDS = [
             "UUBCb6Ye01QIcOQqn4jXl2cQ",
@@ -120,14 +120,14 @@ jobs:
                   const title   = video.snippet.title;
                   const channel = video.snippet.channelTitle;
                   const url     = `https://youtube.com/watch?v=${videoId}`;
-                  const message = `🔴 *${channel} is LIVE!*\n\n*${title}*\n\n${url}`;
+                  const esc     = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                  const message = `🔴 <b>${esc(channel)} is LIVE!</b>\n\n<b>${esc(title)}</b>\n\n${url}`;
 
                   console.log(`📤 Sending Telegram message for: ${channel} - ${title}`);
-                  console.log(`📝 Message content: ${message}`);
 
                   const telegramResult = await post(
                     `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-                    { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "Markdown" }
+                    { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "HTML" }
                   );
 
                   console.log(`📬 Telegram response: ${telegramResult}`);
